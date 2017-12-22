@@ -21,7 +21,7 @@ sudo sh install_salt.sh -P -M git v2017.7.2
 update master config
 
 ```shell
-ssh-keygen -t ecdsa -b 521
+ssh-keygen -t rsa -b 8192
 nano /etc/salt/master
 ```
 
@@ -30,8 +30,8 @@ ext_pillar:
   - git:
     - master git@github.com:${user}/${repo}:
       - root: salt/pillar
-      - privkey: /root/.ssh/id_ecdsa
-      - pubkey: /root/.ssh/id_ecdsa.pub
+      - privkey: /root/.ssh/id_rsa
+      - pubkey: /root/.ssh/id_rsa.pub
 ```
 
 ```yml
