@@ -1,0 +1,4 @@
+base:
+  '*':
+    - cloud
+    - agents
