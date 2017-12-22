@@ -26,6 +26,14 @@ nano /etc/salt/master
 ```
 
 ```
+fileserver_backend:
+  - git
+gitfs_remotes:
+  - git@github.com:ahdinosaur/butt-as-a-service
+gitfs_privkey: /root/.ssh/id_rsa
+gitfs_pubkey: /root/.ssh/id_rsa.pub
+gitfs_root: salt/state
+
 ext_pillar:
   - git:
     - master git@github.com:${user}/${repo}:
