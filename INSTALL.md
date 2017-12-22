@@ -30,6 +30,8 @@ ext_pillar:
   - git:
     - master git@github.com:${user}/${repo}:
       - root: salt/pillar
+      - privkey: /root/.ssh/id_ecdsa
+      - pubkey: /root/.ssh/id_ecdsa.pub
 ```
 
 ```yml
