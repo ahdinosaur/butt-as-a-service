@@ -28,7 +28,7 @@ nano /etc/salt/master
 ```
 ext_pillar:
   - git:
-    - master git@github.com:${user}/${repo}
+    - master git@github.com:${user}/${repo}:
       - root: salt/pillar
 ```
 
