@@ -10,6 +10,8 @@ install salt stack
 
 ```shell
 cd ~
+apt update
+apt install -y python-pygit2
 curl -L https://bootstrap.saltstack.com -o install_salt.sh
 sudo sh install_salt.sh -P -M git v2017.7.2
 ```
