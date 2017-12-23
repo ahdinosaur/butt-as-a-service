@@ -1,9 +1,6 @@
 cloud:
   ssh_key_name: salt
   ssh_key_file: /root/.ssh/id_rsa
-
-  minion:
-    master: salt.butt.nz
   
   providers:
     scaleway:

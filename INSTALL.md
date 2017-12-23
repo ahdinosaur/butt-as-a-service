@@ -2,7 +2,7 @@
 
 ---
 
-provision new Scaleway server
+provision new server
 
 ---
 
@@ -38,14 +38,13 @@ nano /etc/salt/master
 fileserver_backend:
   - git
 
-gitfs_privkey: /root/.ssh/id_rsa
-gitfs_pubkey: /root/.ssh/id_rsa.pub
 gitfs_remotes:
-  - git@github.com:ahdinosaur/butt-as-a-service:
+  - git://github.com/saltstack-formulas/salt-formula
+  - git://github.com/ahdinosaur/butt-as-a-service:
     - root: salt/state
 
-ext_pillar_privkey: /root/.ssh/id_rsa
-ext_pillar_pubkey: /root/.ssh/id_rsa.pub
+git_pillar_privkey: /root/.ssh/id_rsa
+git_pillar_pubkey: /root/.ssh/id_rsa.pub
 ext_pillar:
   - git:
     - master git@github.com:${user}/${repo}:
