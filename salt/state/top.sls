@@ -1,6 +1,15 @@
 production:
-  {% for role in salt['grains.get']('roles', []) %}
+  '*':
+    - agents
+  {% set roles = salt['grains.get']('roles', []) -%}
+  {% for role in roles -%}
   'roles:{{ role }}':
     - match: grain
+    {% if role == 'master' -%}
+    - salt.master
+    {% elif role == 'minion' -%}
+    - salt.minion
+    {% else %}
     - {{ role }}
-  {% endfor %}
+    {% endif %}
+  {% endfor -%}
