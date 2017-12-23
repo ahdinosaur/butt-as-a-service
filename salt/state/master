@@ -1,0 +1,15 @@
+fileserver_backend:
+  - git
+
+gitfs_privkey: {{ pillar['git_privkey'] }}
+gitfs_pubkey: {{ pillar['git_pubkey'] }}
+gitfs_remotes:
+  - {{ pillar['state_git'] }}:
+    - root: salt/state
+
+gitfs_privkey: {{ pillar['git_privkey'] }}
+gitfs_pubkey: {{ pillar['git_pubkey'] }}
+ext_pillar:
+  - git:
+    - master {{pillar_git}:
+      - root: salt/pillar

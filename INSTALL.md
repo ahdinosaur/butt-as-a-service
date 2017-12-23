@@ -18,32 +18,38 @@ sudo sh install_salt.sh -P -M git v2017.7.2
 
 ---
 
-update master config
+generate ssh key
 
 ```shell
 ssh-keygen -t rsa -b 8192
+```
+
+upload to GitHub (or git provider): https://github.com/settings/keys
+
+---
+
+update master config
+
+```shell
 nano /etc/salt/master
 ```
 
-```
+```yaml
 fileserver_backend:
   - git
-gitfs_remotes:
-  - git@github.com:ahdinosaur/butt-as-a-service
+
 gitfs_privkey: /root/.ssh/id_rsa
 gitfs_pubkey: /root/.ssh/id_rsa.pub
-gitfs_root: salt/state
+gitfs_remotes:
+  - git@github.com:ahdinosaur/butt-as-a-service:
+    - root: salt/state
 
+ext_pillar_privkey: /root/.ssh/id_rsa
+ext_pillar_pubkey: /root/.ssh/id_rsa.pub
 ext_pillar:
   - git:
     - master git@github.com:${user}/${repo}:
       - root: salt/pillar
-      - privkey: /root/.ssh/id_rsa
-      - pubkey: /root/.ssh/id_rsa.pub
-```
-
-```yml
-master: 127.0.0.1
 ```
 
 ---
