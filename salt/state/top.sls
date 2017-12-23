@@ -1,8 +1,6 @@
-{% for role in salt['grains.get']('roles', []) %}
-{% if role %}
-  'role:{{ role }}':
+production:
+  {% for role in salt['grains.get']('roles', []) %}
+  'roles:{{ role }}':
     - match: grain
     - {{ role }}
-
-{% endif %}
-{% endfor %}
+  {% endfor %}
