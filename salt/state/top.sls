@@ -1,7 +1,4 @@
 production:
-  '*':
-    - agents
-
   {% set roles = salt['grains.get']('roles', []) -%}
   {% for role in roles -%}
   'roles:{{ role }}':
@@ -10,7 +7,7 @@ production:
     - salt.master
     {% elif role == 'minion' -%}
     - salt.minion
-    {% else %}
+    {% else -%}
     - {{ role }}
     {% endif %}
 
