@@ -1,20 +1,11 @@
-{% set roles_by_service = {
-  'hub': [
-    'master'
-  ],
-  'pub': [
-    'minion'
-   ]
-%}
-{% set agents = salt['pillar.get']('agents', []) %}
-{% for agent in agents %}
+{% set hubs = salt['pillar.get']('hub.list', []) %}
+{% for hub in hubs %}
 
-{% if agent.type == 'bot' %}
+{$ set provider = hub.provider  %}
+{% set size = hub.size || 'small' %}
+{% set profile = salt['pillar.get']('cloud.' + provider + '_' + size, []) %}
 
-{% set size = agent.size || 'small' %}
-{% set profile = salt['pillar.get']('cloud.profiles_' + size, []) %}
-
-{{agent.name}}:
+{{hub.name}}:
   cloud.present:
     - script: bootstrap-salt
     - script_args: -P git v2017.7.2
@@ -25,10 +16,9 @@
       grains:
         env: production
         roles:
-          - salt
-          {% for role in roles_by_service[agent.service] %}
-          - {{ role }}
-          {% endfor %}
+          - minion
+          - hub
+          - pub
 
 {% endif %}
 
