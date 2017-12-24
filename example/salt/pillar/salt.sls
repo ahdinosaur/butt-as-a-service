@@ -1,18 +1,21 @@
-salt:
+salt: 
+  minion_remove_config: True
+  master_remove_config: True
+
   master:
     fileserver_backend:
       - git
 
     gitfs_remotes:
-      - https://github.com/saltstack-formulas/salt-formula
-      - https://github.com/ahdinosaur/butt-as-a-service:
+      - git://github.com/saltstack-formulas/salt-formula.git
+      - git://github.com/ahdinosaur/butt-as-a-service.git:
         - root: salt/state
 
-    ext_pillar_privkey: /root/.ssh/id_rsa
-    ext_pillar_pubkey: /root/.ssh/id_rsa.pub
+    git_pillar_privkey: /root/.ssh/id_rsa
+    git_pillar_pubkey: /root/.ssh/id_rsa.pub
     ext_pillar:
       - git:
-        - master git@github.com:ahdinosaur/salt.butt.nz:
+        - master git@github.com:ahdinosaur/salt.butt.nz.git:
           - root: salt/pillar
 
   minion:
