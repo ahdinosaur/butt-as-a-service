@@ -55,7 +55,6 @@ healer:
     - user: {{ user }}
     - group: {{ group }}
     - formatter: json
-    - merge_if_exists: True
     - require:
       - file: {{ name }}/
 
