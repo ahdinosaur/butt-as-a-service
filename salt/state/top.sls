@@ -7,6 +7,6 @@ base:
   'roles:minion':
     - match: grain
     - salt.minion
-  'roles:pub'
+  'roles:hub':
     - match: grain
-    - pub
+    - hub
