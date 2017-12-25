@@ -7,6 +7,10 @@ ahdinosaur/healer:
 healer:
   docker_container.running:
     - image: ahdinosaur/healer
+    - name: healer
+    - binds:
+      - /var/run/docker.sock:/tmp/docker.sock
+    - restart_policy: unless-stopped
     - require:
       - docker_image: ahdinosaur/healer
 
@@ -37,10 +41,10 @@ healer:
   file.managed:
     - name: /root/bots/{{ name }}/secret
     - dataset:
-      curve: {{ curve }}
+      curve: {{ curve }}"
       public: {{ public }}.{{ curve }}
       private: {{ private }}.{{ curve }}
-      id: @{{ public }}.{{ curve }}
+      id: "@{{ public }}.{{ curve }}"
     - mode: 0400
     - user: debian
     - group: debian
@@ -69,6 +73,7 @@ healer:
 {{ name }}:
   docker_container.running:
     - image: ahdinosaur/ssb-pub
+    - name: {{ name }}
     - env:
       - ssb_host: {{ name }}
     - binds:
