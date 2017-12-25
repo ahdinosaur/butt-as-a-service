@@ -10,6 +10,8 @@ most people seem happy to pay $5 / month.
 
 if we prove a successful value flow, we can scale the ecosystem of Scuttlebutt bot providers, in order to support the ecosystem of Scuttlebutt organizers.
 
+hubs > pubs > rugs
+
 ## job stories
 
 - when i want to start a bot,
