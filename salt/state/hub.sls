@@ -14,6 +14,9 @@ healer:
     - require:
       - docker_image: ahdinosaur/healer
 
+/root/bots/:
+  file.directory
+
 {% set seeds = salt['pillar.get']('hub:seeds', []) %}
 {% set pubs = salt['pillar.get']('hub:pubs', []) %}
 
