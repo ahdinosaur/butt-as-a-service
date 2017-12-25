@@ -44,13 +44,13 @@ healer:
       - group
 
 {{ name }}/secret:
-  file.managed:
+  file.serialize:
     - name: /root/bots/{{ name }}/secret
     - dataset:
-      curve: {{ curve }}
-      public: {{ public }}.{{ curve }}
-      private: {{ private }}.{{ curve }}
-      id: "@{{ public }}.{{ curve }}"
+        curve: {{ curve }}
+        public: {{ public }}.{{ curve }}
+        private: {{ private }}.{{ curve }}
+        id: "@{{ public }}.{{ curve }}"
     - mode: 0400
     - user: {{ user }}
     - group: {{ group }}
@@ -63,11 +63,11 @@ healer:
   file.serialize:
     - name: /root/bots/{{ name }}/config
     - dataset:
-      seeds:
-        - net:{{ name }}:{{ port }}~shs:{{ public }}
-        {% for seed in seeds %}
-        - {{ seed }}
-        {% endfor %}
+        seeds:
+          - net:{{ name }}:{{ port }}~shs:{{ public }}
+          {% for seed in seeds %}
+          - {{ seed }}
+          {% endfor %}
     - formatter: json
     - mode: 644
     - user: {{ user }}
