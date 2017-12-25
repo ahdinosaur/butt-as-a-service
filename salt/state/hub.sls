@@ -47,9 +47,9 @@ healer:
   file.serialize:
     - name: /root/bots/{{ name }}/secret
     - dataset:
-        curve: {{ curve }}
-        public: {{ public }}.{{ curve }}
-        private: {{ private }}.{{ curve }}
+        curve: "{{ curve }}"
+        public: "{{ public }}.{{ curve }}"
+        private: "{{ private }}.{{ curve }}"
         id: "@{{ public }}.{{ curve }}"
     - mode: 0400
     - user: {{ user }}
