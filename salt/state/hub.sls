@@ -14,8 +14,8 @@ healer:
     - require:
       - docker_image: ahdinosaur/healer
 
-{% set seeds = salt['grains.get']('hub:seeds', []) %}
-{% set pubs = salt['grains.get']('hub:pubs', []) %}
+{% set seeds = salt['pillar.get']('hub:seeds', []) %}
+{% set pubs = salt['pillar.get']('hub:pubs', []) %}
 
 {% for pub in pubs %}
 
