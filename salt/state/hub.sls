@@ -41,7 +41,7 @@ healer:
   file.managed:
     - name: /root/bots/{{ name }}/secret
     - dataset:
-      curve: {{ curve }}"
+      curve: {{ curve }}
       public: {{ public }}.{{ curve }}
       private: {{ private }}.{{ curve }}
       id: "@{{ public }}.{{ curve }}"
