@@ -22,6 +22,9 @@ healer:
 {% set name = pub.name %}
 {% set port = pub.get('port', 8008) %}
 
+{% set user = 1000 %}
+{% set group = 1000 %}
+
 {% set secret = pub.secret %}
 {% set curve = secret.curve %}
 {% set public = secret.public %}
@@ -31,8 +34,8 @@ healer:
   file.directory:
     - name: /root/bots/{{ name }}/
     - mode: 755
-    - user: debian
-    - group: debian
+    - user: {{ user }}
+    - group: {{ group }}
     - recurse:
       - user
       - group
@@ -46,8 +49,8 @@ healer:
       private: {{ private }}.{{ curve }}
       id: "@{{ public }}.{{ curve }}"
     - mode: 0400
-    - user: debian
-    - group: debian
+    - user: {{ user }}
+    - group: {{ group }}
     - formatter: json
     - merge_if_exists: True
     - require:
@@ -64,8 +67,8 @@ healer:
         {% endfor %}
     - formatter: json
     - mode: 644
-    - user: debian
-    - group: debian
+    - user: {{ user }}
+    - group: {{ group }}
     - merge_if_exists: True
     - require:
       - file: {{ name }}/
@@ -83,6 +86,7 @@ healer:
     - restart_policy: unless-stopped
     - require:
       - docker_image: ahdinosaur/ssb-pub
+      - file: {{ name }}/
       - file: {{ name }}/secret
       - file: {{ name }}/config
 
