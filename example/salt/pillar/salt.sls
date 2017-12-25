@@ -8,6 +8,7 @@ salt:
 
     gitfs_remotes:
       - git://github.com/saltstack-formulas/salt-formula.git
+      - git://github.com/saltstack-formulas/docker-formula.git
       - git://github.com/ahdinosaur/butt-as-a-service.git:
         - root: salt/state
 
