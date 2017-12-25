@@ -20,7 +20,7 @@ healer:
 {% for pub in pubs %}
 
 {% set name = pub.name %}
-{% set port = pub.port or 8008 %}
+{% set port = pub.get('port', 8008) %}
 
 {% set secret = pub.secret %}
 {% set curve = secret.curve %}
