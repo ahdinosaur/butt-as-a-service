@@ -1,8 +1,14 @@
 # Butt as a Service
 
-what if everyone had a friend in the cloud?
+what if everyone had a friend in the bot family?
 
 Butt as a Service helps you provision and monitor Scuttlebutt bots in the cloud.
+
+## business
+
+most people seem happy to pay $5 / month.
+
+if we prove a successful value flow, we can scale the ecosystem of Scuttlebutt bot providers, in order to support the ecosystem of Scuttlebutt organizers.
 
 ## job stories
 
