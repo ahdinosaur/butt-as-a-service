@@ -219,3 +219,33 @@ nova tenant-network-list
 ```
 
 ---
+
+TODO
+
+```
+debian@salt:~$ nova keypair-list
++------+-------------+
+| Name | Fingerprint |
++------+-------------+
++------+-------------+
+debian@salt:~$ sudo -i
+root@salt:~# source /home/debian/rc 
+Please enter your OpenStack Password: 
+root@salt:~# nova keypair-add --pub-key /etc/salt/pki/openstack.pub openstack
+usage: nova keypair-add [--pub-key <pub-key>] <name>
+error: too few arguments
+Try 'nova help keypair-add' for more information.
+root@salt:~# nova keypair-list
++-----------+-------------------------------------------------+
+| Name      | Fingerprint                                     |
++-----------+-------------------------------------------------+
+| openstack | aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99 |
++-----------+-------------------------------------------------+
+```
+
+---
+
+
+```shell
+sudo salt-cloud -p ovh_b2_15 green.butt.nz
+```
