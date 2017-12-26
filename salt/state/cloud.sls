@@ -5,13 +5,12 @@
 {% set profile = hub.profile  %}
 
 {{ name }}:
-  cloud.present:
+  cloud.profile:
     - profile: {{ profile }}
-    - kwargs:
-        minion:
-          grains:
-            hub: {{ name }}
-            roles:
-              - minion
+    - minion:
+        grains:
+          hub: {{ name }}
+          roles:
+            - minion
 
 {% endif %}

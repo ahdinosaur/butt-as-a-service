@@ -181,6 +181,17 @@ sudo salt '*' state.highstate
 
 ---
 
+
+generate salt master's ssh key for Open Stack
+
+```shell
+sudo ssh-keygen -t rsa -b 8192 -f /etc/salt/pki/openstack
+```
+
+upload to OVH
+
+---
+
 TODO
 
 source your OpenStack credentials
