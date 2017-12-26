@@ -7,7 +7,7 @@
 {{ name }}:
   cloud.present:
     - profile: {{ profile }}
-    - kwargs
+    - kwargs:
         minion:
           grains:
             hub: {{ name }}
