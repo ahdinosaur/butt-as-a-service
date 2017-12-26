@@ -39,9 +39,9 @@ ssh -i ~/.ssh/ovh debian@<public_ip_address>
 
 ```shell
 wget -O - https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
-echo "deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main" > /etc/apt/sources.list.d/saltstack.list
-apt update
-apt install -y salt-master salt-minion salt-cloud python-pygit2
+echo "deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main" | sudo tee /etc/apt/sources.list.d/saltstack.list
+sudo apt update
+sudo apt install -y salt-master salt-minion salt-cloud git python-pygit2 python-setuptools python-novaclient python-glanceclient python-netaddr
 ```
 
 ---
@@ -49,17 +49,21 @@ apt install -y salt-master salt-minion salt-cloud python-pygit2
 generate salt master's ssh key for GitHub
 
 ```shell
-ssh-keygen -t rsa -b 8192 /etc/salt/pki/github
+sudo ssh-keygen -t rsa -b 8192 -f /etc/salt/pki/github
 ```
 
 upload to GitHub (or git provider): https://github.com/settings/keys
+
+```shell
+cat /etc/salt/pki/github.pub
+```
 
 ---
 
 update master config
 
 ```shell
-nano /etc/salt/master
+sudo nano /etc/salt/master
 ```
 
 ```yaml
@@ -88,11 +92,12 @@ ext_pillar:
 update minion config
 
 ```shell
-nano /etc/salt/minion
+sudo nano /etc/salt/minion
 ```
 
 ```yml
-master: 127.0.0.1
+master: <private_ip_address>
+keysize: 8192
 ```
 
 ---
@@ -100,8 +105,8 @@ master: 127.0.0.1
 restart salt servers
 
 ```shell
-service salt-minion restart
-service salt-master restart
+sudo service salt-minion restart
+sudo service salt-master restart
 ```
 
 ---
@@ -109,7 +114,7 @@ service salt-master restart
 list minion keys
 
 ```shell
-salt-key --list all
+sudo salt-key --list all
 ```
 
 ---
@@ -117,18 +122,42 @@ salt-key --list all
 accept new key
 
 ```shell
-salt-key -a ${key}
+sudo salt-key -a ${key}
 ```
 
 ---
 
-test first minion
+test minion
 
 ```shell
-salt '*' test.ping
+sudo salt '*' test.ping
 ```
 
 ---
+
+update mine
+
+```shell
+sudo salt '*' mine.update
+```
+
+---
+
+on local machine,
+
+copy example pillar to new repo
+
+```shell
+cp -r example ../salt.domain.tld
+cd ../salt.domain.tld
+git init
+# edit values
+git push origin master
+```
+
+---
+
+back on the remote server,
 
 update master grains
 
@@ -147,5 +176,5 @@ roles:
 run high state
 
 ```shell
-salt '*' state.highstate
+sudo salt '*' state.highstate
 ```
