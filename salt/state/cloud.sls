@@ -1,4 +1,4 @@
-{% set master = salt['pillar.get']('salt:minion:master')
+{% set master = salt['pillar.get']('salt:minion:master') %}
 {% set hub = salt['pillar.get']('hub') %}
 
 {% if hub %}
