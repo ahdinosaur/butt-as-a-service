@@ -2,26 +2,54 @@
 
 ---
 
-provision new server
+create [OVH Public Cloud account[(https://ovh.com)
 
 ---
 
-install salt stack
+generate SSH key for OVH
 
 ```shell
-cd ~
+ssh-keygen -t rsa -b 8192 -f ~/.ssh/ovh
+```
+
+upload to OVH
+
+---
+
+create vRack and private network
+
+---
+
+provision new server for salt master
+
+- name: salt.domain.tld
+- os: Debian 9
+- size: S1-2 (1 vCPU, 2 GB mem)
+- private network: yes
+
+---
+
+connect to new server
+
+```shell
+ssh -i ~/.ssh/ovh debian@<public_ip_address>
+```
+
+[install salt stack (for Debian)](https://repo.saltstack.com/#debian)
+
+```shell
+wget -O - https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
+echo "deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main" > /etc/apt/sources.list.d/saltstack.list
 apt update
-apt install -y python-pygit2
-curl -L https://bootstrap.saltstack.com -o install_salt.sh
-sudo sh install_salt.sh -P -M git v2017.7.2
+apt install -y salt-master salt-minion salt-cloud python-pygit2
 ```
 
 ---
 
-generate ssh key
+generate salt master's ssh key for GitHub
 
 ```shell
-ssh-keygen -t rsa -b 8192
+ssh-keygen -t rsa -b 8192 /etc/salt/pki/github
 ```
 
 upload to GitHub (or git provider): https://github.com/settings/keys
@@ -35,16 +63,20 @@ nano /etc/salt/master
 ```
 
 ```yaml
+interface: <private_ip_address>
+keysize: 8192
+
 fileserver_backend:
   - git
 
 gitfs_remotes:
   - git://github.com/saltstack-formulas/salt-formula
+  - git://github.com/saltstack-formulas/docker-formula
   - git://github.com/ahdinosaur/butt-as-a-service:
     - root: salt/state
 
-git_pillar_privkey: /root/.ssh/id_rsa
-git_pillar_pubkey: /root/.ssh/id_rsa.pub
+git_pillar_privkey: /etc/salt/pki/github
+git_pillar_pubkey: /etc/salt/pki/github.pub
 ext_pillar:
   - git:
     - master git@github.com:${user}/${repo}:
@@ -77,7 +109,7 @@ service salt-master restart
 list minion keys
 
 ```shell
-sudo salt-key --list all
+salt-key --list all
 ```
 
 ---
@@ -85,7 +117,7 @@ sudo salt-key --list all
 accept new key
 
 ```shell
-sudo salt-key -a ${key}
+salt-key -a ${key}
 ```
 
 ---
@@ -93,12 +125,27 @@ sudo salt-key -a ${key}
 test first minion
 
 ```shell
-sudo salt '*' test.ping
+salt '*' test.ping
 ```
 
 ---
 
-## references
+update master grains
 
-- https://www.digitalocean.com/community/tutorials/saltstack-infrastructure-installing-the-salt-master
-- https://www.digitalocean.com/community/tutorials/saltstack-infrastructure-configuring-salt-cloud-to-spin-up-digitalocean-resources
+```shell
+nano /etc/salt/grains
+``
+
+```yaml
+roles:
+  - master
+  - minion
+```
+
+---
+
+run high state
+
+```shell
+salt '*' state.highstate
+```

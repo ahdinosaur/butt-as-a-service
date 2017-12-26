@@ -1,8 +1,12 @@
 # Butt as a Service
 
+_(work in progress)_
+
 what if everyone had a friend in the bot family?
 
 Butt as a Service helps you provision and monitor Scuttlebutt bots in the cloud.
+
+**get started with [INSTALL.md](./INSTALL.md)**
 
 ## business
 
