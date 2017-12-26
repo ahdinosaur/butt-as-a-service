@@ -178,3 +178,17 @@ run high state
 ```shell
 sudo salt '*' state.highstate
 ```
+
+---
+
+TODO
+
+source your OpenStack credentials
+
+```
+nova flavor-list
+nova image-list
+nova tenant-network-list
+```
+
+---
