@@ -35,14 +35,32 @@ connect to new server
 ssh -i ~/.ssh/ovh debian@<public_ip_address>
 ```
 
+install dependencies
+
+```shell
+sudo apt update
+sudo apt install -y git python-pygit2 # gitfs / git_pillar deps
+sudo apt install -y python-setuptools # i forgot what this was for
+sudo apt install -y python-pip build-essential python-dev # shade deps
+sudo pip install wheel # shade deps
+sudo pip install shade
+```
+
 [install salt stack (for Debian)](https://repo.saltstack.com/#debian)
 
 ```shell
 wget -O - https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
 echo "deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main" | sudo tee /etc/apt/sources.list.d/saltstack.list
 sudo apt update
-sudo apt install -y salt-master salt-minion salt-cloud git python-pygit2 python-setuptools python-novaclient python-glanceclient python-netaddr
+sudo apt install -y salt-master salt-minion salt-cloud
 ```
+
+or
+
+```shell
+wget -O - https://bootstrap.saltstack.com | sudo sh -s -- -P -M -L git develop
+```
+
 
 ---
 
@@ -187,8 +205,6 @@ generate salt master's ssh key for Open Stack
 ```shell
 sudo ssh-keygen -t rsa -b 8192 -f /etc/salt/pki/openstack
 ```
-
-upload to OVH
 
 ---
 

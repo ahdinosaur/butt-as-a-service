@@ -7,6 +7,8 @@
 {{ name }}:
   cloud.profile:
     - profile: {{ profile }}
+    - script: bootstrap-salt
+    - script_args: -P git develop
     - minion:
         grains:
           hub: {{ name }}

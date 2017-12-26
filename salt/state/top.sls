@@ -4,6 +4,7 @@ base:
   'roles:master':
     - match: grain
     - salt.master
+    - salt.cloud
     - cloud
   'roles:minion':
     - match: grain
