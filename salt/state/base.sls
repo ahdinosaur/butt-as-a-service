@@ -13,7 +13,7 @@ python-pip:
 
 {% if role == 'master' %}
 python-wheel:
-  pip.installed
+  pip.installed:
     - require:
       - pkg: python-pip
 
