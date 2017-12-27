@@ -1,7 +1,6 @@
 {% set roles = salt['grains.get']('roles', []) %}
-{% for role in roles %}
 
-{% if role == 'master' or role == 'minion' %}
+{% if 'master' in roles or 'minion' in roles %}
 pip:
   pkg.installed:
     - pkgs:
@@ -11,7 +10,7 @@ pip:
       - python-pip
 {% endif %}
 
-{% if role == 'master' %}
+{% if 'master' in roles %}
 wheel:
   pip.installed:
     - require:
@@ -28,5 +27,3 @@ gitfs:
       - git 
       - python-pygit2
 {% endif %}
-
-{% endfor %}
