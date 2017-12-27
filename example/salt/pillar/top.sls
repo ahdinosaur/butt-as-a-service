@@ -4,6 +4,7 @@ base:
   'roles:master':
     - match: grain
     - salt
+    - hub
   'roles:minion':
     - match: grain
     - salt
