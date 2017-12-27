@@ -2,7 +2,7 @@
 {% for role in roles %}
 
 {% if role == 'master' or role == 'minion' %}
-python-pip:
+pip:
   pkg.installed:
     - pkgs:
       - build-essential
@@ -12,15 +12,15 @@ python-pip:
 {% endif %}
 
 {% if role == 'master' %}
-python-wheel:
+wheel:
   pip.installed:
     - require:
-      - pkg: python-pip
+      - pkg: pip
 
-python-shade:
+shade:
   pip.installed:
     - require:
-      - pip: python-wheel
+      - pip: wheel
 
 gitfs:
   pkg.installed:
