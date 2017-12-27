@@ -40,7 +40,7 @@ install dependencies
 ```shell
 sudo apt update
 sudo apt install -y git python-pygit2 # gitfs / git_pillar deps
-sudo apt install -y python-setuptools # i forgot what this was for
+sudo apt install -y python-setuptools # docker-py
 sudo apt install -y python-pip build-essential python-dev # shade deps
 sudo pip install wheel # shade deps
 sudo pip install shade

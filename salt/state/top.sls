@@ -1,5 +1,6 @@
 base:
   '*':
+    - base
     - docker
   'roles:master':
     - match: grain
