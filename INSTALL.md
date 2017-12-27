@@ -2,6 +2,20 @@
 
 ---
 
+on local machine,
+
+copy example pillar to new repo
+
+```shell
+cp -r example ../salt.domain.tld
+cd ../salt.domain.tld
+git init
+# edit values
+git push origin master
+```
+
+---
+
 create [OVH Public Cloud account[(https://ovh.com)
 
 ---
@@ -40,27 +54,24 @@ install dependencies
 ```shell
 sudo apt update
 sudo apt install -y git python-pygit2 # gitfs / git_pillar deps
-sudo apt install -y python-setuptools # docker-py
-sudo apt install -y python-pip build-essential python-dev # shade deps
-sudo pip install wheel # shade deps
-sudo pip install shade
 ```
 
-[install salt stack (for Debian)](https://repo.saltstack.com/#debian)
-
-```shell
-wget -O - https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
-echo "deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main" | sudo tee /etc/apt/sources.list.d/saltstack.list
-sudo apt update
-sudo apt install -y salt-master salt-minion salt-cloud
-```
-
-or
+install salt stack
 
 ```shell
 wget -O - https://bootstrap.saltstack.com | sudo sh -s -- -P -M -L git develop
 ```
 
+> at the moment we depend on the latest git version for recent changes to OpenStack cloud
+>
+> when this is released, we can follow the [normal install process for Debian](https://repo.saltstack.com/#debian)
+>
+> ```shell
+> wget -O - https://repo.saltstack.com/apt/debian/9/amd64/latest/SALTSTACK-GPG-KEY.pub | sudo apt-key add -
+> echo "deb http://repo.saltstack.com/apt/debian/9/amd64/latest stretch main" | sudo tee /etc/apt/sources.list.d/saltstack.list
+> sudo apt update
+> sudo apt install -y salt-master salt-minion salt-cloud
+> ```
 
 ---
 
@@ -73,20 +84,25 @@ sudo ssh-keygen -t rsa -b 8192 -f /etc/salt/pki/github
 upload to GitHub (or git provider): https://github.com/settings/keys
 
 ```shell
-cat /etc/salt/pki/github.pub
+sudo cat /etc/salt/pki/github.pub
 ```
 
 ---
 
-update master config
+update master and minion config
 
 ```shell
-sudo nano /etc/salt/master
-```
+# CHANGE ME
+user=ahdinosaur
+name=salt.butt.nz
+private_ip_address=192.168.0.100
 
-```yaml
-interface: <private_ip_address>
-keysize: 8192
+private_config_repo=git@github.com:${user}/${name}
+keysize=8192
+
+sudo tee /etc/salt/master << EOF
+interface: ${private_ip_address}
+keysize: ${keysize}
 
 fileserver_backend:
   - git
@@ -101,21 +117,19 @@ git_pillar_privkey: /etc/salt/pki/github
 git_pillar_pubkey: /etc/salt/pki/github.pub
 ext_pillar:
   - git:
-    - master git@github.com:${user}/${repo}:
+    - master ${private_config_repo}:
       - root: salt/pillar
-```
+EOF
 
----
-
-update minion config
-
-```shell
-sudo nano /etc/salt/minion
-```
-
-```yml
-master: <private_ip_address>
-keysize: 8192
+sudo tee /etc/salt/minion << EOF
+master: ${private_ip_address}
+keysize: ${keysize}
+grains:
+  id: ${name}
+  roles:
+    - master
+    - minion
+EOF
 ```
 
 ---
@@ -151,76 +165,79 @@ test minion
 sudo salt '*' test.ping
 ```
 
+yay! :tada:
+
 ---
 
-update mine
+> (not currently used)
+>
+> update mine
+>
+> ```shell
+> sudo salt '*' mine.update
+> ```
+
+---
+
+apply state
 
 ```shell
-sudo salt '*' mine.update
+sudo salt '*' state.apply
 ```
 
 ---
 
-on local machine,
+install nova
 
-copy example pillar to new repo
+```
+sudo apt install -y python-novaclient
+```
+
+get OpenStack credentials from provider
 
 ```shell
-cp -r example ../salt.domain.tld
-cd ../salt.domain.tld
-git init
-# edit values
-git push origin master
+
+tee ~/rc.sh << EOF
+export OS_AUTH_URL=https://auth.cloud.ovh.net/v2.0/
+export OS_TENANT_ID=cca6608c1346428d9c0ea5748bf91272
+export OS_TENANT_NAME="3526803835773644"
+export OS_USERNAME="qrGGDwAZZKhC"
+echo "Please enter your OpenStack Password: "
+read -sr OS_PASSWORD_INPUT
+export OS_PASSWORD=\$OS_PASSWORD_INPUT
+export OS_REGION_NAME="WAW1"
+EOF
 ```
+
+source with `source ~/rc.sh`
+
+> to find available flavors
+> 
+> ```shell
+> nova flavor-list
+> ```
+
+> to find available images
+> 
+> ```shell
+> nova image-list
+> ```
+
+> to find available networks
+> 
+> ```shell
+> nova tenant-network-list
+> ```
 
 ---
 
-back on the remote server,
-
-update master grains
+generate salt master's ssh key for Open Stack provider
 
 ```shell
-nano /etc/salt/grains
-``
-
-```yaml
-roles:
-  - master
-  - minion
+sudo ssh-keygen -t rsa -b 8192 -f /etc/salt/pki/ovh
 ```
 
----
-
-run high state
-
-```shell
-sudo salt '*' state.highstate
-```
-
----
-
-
-generate salt master's ssh key for Open Stack
-
-```shell
-sudo ssh-keygen -t rsa -b 8192 -f /etc/salt/pki/openstack
-```
-
----
-
-TODO
-
-source your OpenStack credentials
-
-```
-nova flavor-list
-nova image-list
-nova tenant-network-list
-```
-
----
-
-TODO
+add our new keypair to provider
 
 ```
 debian@salt:~$ nova keypair-list
@@ -229,23 +246,49 @@ debian@salt:~$ nova keypair-list
 +------+-------------+
 +------+-------------+
 debian@salt:~$ sudo -i
-root@salt:~# source /home/debian/rc 
+root@salt:~# source /home/debian/rc.sh
 Please enter your OpenStack Password: 
-root@salt:~# nova keypair-add --pub-key /etc/salt/pki/openstack.pub openstack
-usage: nova keypair-add [--pub-key <pub-key>] <name>
-error: too few arguments
-Try 'nova help keypair-add' for more information.
+root@salt:~# nova keypair-add --pub-key /etc/salt/pki/ovh.pub salt
 root@salt:~# nova keypair-list
 +-----------+-------------------------------------------------+
-| Name      | Fingerprint                                     |
+| Name | Fingerprint                                     |
 +-----------+-------------------------------------------------+
-| openstack | aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99 |
+| salt | aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99 |
 +-----------+-------------------------------------------------+
+root@salt:~# exit
 ```
 
 ---
 
+provision your first hub(s)!
 
 ```shell
-sudo salt-cloud -p ovh_b2_15 green.butt.nz
+sudo salt-cloud -p hub_ovh_b2_15 green.butt.nz
+```
+
+:cake:
+
+```shell
+sudo salt '*' test.ping
+```
+
+```shell
+sudo salt '*' grains.items
+```
+
+---
+
+apply the state to the new minion(s)
+
+```shell
+sudo salt '*' state.apply
+```
+
+---
+
+login to the hub from the salt master
+
+```shell
+hub_ip_address=192.168.0.200
+sudo ssh -i /etc/salt/pki/ovh debian@${hub_ip_address}
 ```
